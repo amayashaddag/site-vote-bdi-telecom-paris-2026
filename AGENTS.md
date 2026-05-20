@@ -1,0 +1,1 @@
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in https://vitejs.dev before writing any code. Heed deprecation notices.
