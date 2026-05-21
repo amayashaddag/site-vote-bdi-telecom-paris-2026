@@ -24,14 +24,16 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const dbPath = path.join(__dirname, 'votes.json')
 
 const initialCountries: Country[] = [
-  { id: 1, code: 'FR', name: 'France' },
-  { id: 2, code: 'IT', name: 'Italie' },
-  { id: 3, code: 'JP', name: 'Japon' },
-  { id: 4, code: 'MX', name: 'Mexique' },
-  { id: 5, code: 'IN', name: 'Inde' },
-  { id: 6, code: 'TH', name: 'Thaïlande' },
-  { id: 7, code: 'MA', name: 'Maroc' },
-  { id: 8, code: 'BR', name: 'Brésil' },
+  { id: 1,  code: 'LB', name: 'Liban' },
+  { id: 2,  code: 'TN', name: 'Tunisie' },
+  { id: 3,  code: 'DZ', name: 'Algérie' },
+  { id: 4,  code: 'BR', name: 'Brésil' },
+  { id: 5,  code: 'SG', name: 'Singapour' },
+  { id: 6,  code: 'UA-PL', name: 'Ukraine & Pologne' },
+  { id: 7,  code: 'CO-PE', name: 'Colombie & Pérou' },
+  { id: 8,  code: 'CN', name: 'Chine' },
+  { id: 9,  code: 'JP', name: 'Japon' },
+  { id: 10, code: 'WA', name: "Afrique de l'Ouest" },
 ]
 
 const adapter = new JSONFileSync<Data>(dbPath)
