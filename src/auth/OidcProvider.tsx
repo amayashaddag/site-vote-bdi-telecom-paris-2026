@@ -2,6 +2,44 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 import { UserManager, User } from 'oidc-client-ts'
 import { getOidcSettings } from './oidcClient'
 
+const isDevelopment = (import.meta as any)?.env?.MODE === 'development'
+const oidcDebugAuthority = (() => {
+  try { return getOidcSettings().authority } catch { return '' }
+})()
+
+if (typeof window !== 'undefined' && isDevelopment && window.fetch) {
+  const originalFetch = window.fetch.bind(window)
+  window.fetch = async (resource: RequestInfo, init?: RequestInit) => {
+    const url = typeof resource === 'string' ? resource : resource.url
+    const method = init?.method ?? (typeof resource !== 'string' ? resource.method : 'GET')
+    const isOidcRequest = url.includes(oidcDebugAuthority) || url.includes('/.well-known/openid-configuration')
+
+    if (isOidcRequest) {
+      console.group('[OIDC DEBUG] fetch')
+      console.log('Request URL:', url)
+      console.log('Method:', method)
+      console.log('Options:', init)
+    }
+
+    try {
+      const response = await originalFetch(resource, init)
+      if (isOidcRequest) {
+        console.log('Response status:', response.status)
+        console.log('Response ok:', response.ok)
+        console.log('Response type:', response.type)
+        console.groupEnd()
+      }
+      return response
+    } catch (error) {
+      if (isOidcRequest) {
+        console.error('[OIDC DEBUG] fetch failed:', error)
+        console.groupEnd()
+      }
+      throw error
+    }
+  }
+}
+
 interface OidcContextValue {
   user: User | null
   userId: string | null
@@ -67,8 +105,12 @@ export function OidcProvider({ children }: { children: ReactNode }) {
           setUser(loadedUser)
           window.history.replaceState({}, document.title, window.location.pathname)
         } catch (err) {
-          console.error(err)
-          setError('Échec du traitement du retour OIDC.')
+          console.error('[OIDC] signinRedirectCallback error:', err)  // ← déjà là
+          // ↓ Ajoute ça pour voir le détail
+          console.error('[OIDC] error name:', (err as any)?.name)
+          console.error('[OIDC] error message:', (err as any)?.message)
+          console.error('[OIDC] current URL:', window.location.href)
+          setError(`Échec du traitement du retour OIDC. ${(err as Error).message}`)
         }
       }
     }
@@ -82,7 +124,7 @@ export function OidcProvider({ children }: { children: ReactNode }) {
       await manager.signinRedirect()
     } catch (err) {
       console.error(err)
-      setError('Échec de la redirection vers le fournisseur d’authentification.')
+      setError(`Échec de la redirection vers le fournisseur d’authentification. ${(err as Error).message}`)
       setLoading(false)
     }
   }, [manager])
