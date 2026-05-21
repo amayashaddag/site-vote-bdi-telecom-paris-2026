@@ -25,8 +25,7 @@ export function getOidcSettings(): UserManagerSettings {
       token_endpoint: `https://auth.garezeldap.rezel.net/application/o/token/`,
       end_session_endpoint: `${authority}/end-session/`,
       userinfo_endpoint: `https://auth.garezeldap.rezel.net/application/o/userinfo/`,
-      jwks_uri: `${authority}/jwks/`,
-      signing_keys: [],  // ← désactive le fetch des jwks
+      jwks_uri: `${authority}/jwks/`
     },
     filterProtocolClaims: true,
     validateSubOnSilentRenew: false,

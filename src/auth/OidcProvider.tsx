@@ -9,9 +9,9 @@ const oidcDebugAuthority = (() => {
 
 if (typeof window !== 'undefined' && isDevelopment && window.fetch) {
   const originalFetch = window.fetch.bind(window)
-  window.fetch = async (resource: RequestInfo, init?: RequestInit) => {
-    const url = typeof resource === 'string' ? resource : resource.url
-    const method = init?.method ?? (typeof resource !== 'string' ? resource.method : 'GET')
+  window.fetch = async (resource: RequestInfo | URL, init?: RequestInit) => {
+  const url = typeof resource === 'string' ? resource : resource instanceof URL ? resource.href : resource.url
+    const method = init?.method ?? (resource instanceof Request ? resource.method : 'GET')
     const isOidcRequest = url.includes(oidcDebugAuthority) || url.includes('/.well-known/openid-configuration')
 
     if (isOidcRequest) {
