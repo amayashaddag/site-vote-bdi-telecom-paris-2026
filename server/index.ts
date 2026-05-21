@@ -1,5 +1,4 @@
 import express from 'express'
-import cors from 'cors'
 import {
   getCountries,
   hasUserVoted,
@@ -38,7 +37,6 @@ function requireAdmin(req: express.Request, res: express.Response, next: express
   next()
 }
 
-app.use(cors())
 app.use(express.json())
 
 app.get('/api/countries', (_req, res) => {
