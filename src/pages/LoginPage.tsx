@@ -30,17 +30,6 @@ export default function LoginPage() {
           <button type="button" onClick={signIn}>
             Se connecter avec OIDC
           </button>
-          <button type="button" onClick={debugSignIn} className="secondary">
-            [DEBUG] Connexion rapide
-          </button>
-          <button type="button" onClick={debugAdminSignIn} className="secondary">
-            [DEBUG ADMIN] Connexion admin
-          </button>
-          {import.meta.env.MODE === 'development' ? (
-            <button type="button" onClick={debugClearState} className="secondary">
-              [DEBUG] Effacer l’état debug
-            </button>
-          ) : null}
         </div>
       </WelcomeScreen>
     </div>
